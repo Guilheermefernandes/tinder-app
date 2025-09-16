@@ -29,10 +29,6 @@ export default function Screen(){
         console.log(data)
     }
 
-    const open = () => {
-        pickerRef.current?.focus()
-    }
-
     return (
         <SafeAreaView style={styles.container}>
             
