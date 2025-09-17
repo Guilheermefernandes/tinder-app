@@ -8,4 +8,8 @@ export interface User {
   createdAt: Date;
   slug: string;
   sex: Sex;
+  description?: string
+  interactions: number
+  matched: number
+  photos : number
 }
