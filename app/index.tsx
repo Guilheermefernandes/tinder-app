@@ -4,20 +4,22 @@ import { ActivityIndicator, Button, StyleSheet, Text, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useAuth } from "../context/authContext";
 import { Loader } from "lucide-react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Screen(){
 
-    const  auth = useAuth()
 
     useEffect(() => {
-        if(!auth?.loading){
-            if(!auth?.auth || !auth.user){
+        const auth = async () => {
+            const token = await AsyncStorage.getItem('token')
+            if(token != null){
+                router.replace('/home')
+            }else{
                 router.replace('/login')
             }
         }
-    }, [auth?.loading])
-
-
+        auth()
+    }, [])
 
     return(
         <SafeAreaView style={styles.container}>

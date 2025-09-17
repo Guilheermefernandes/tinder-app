@@ -6,8 +6,11 @@ import { Link, router } from "expo-router";
 import { Controller, useForm } from "react-hook-form";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Mail } from "lucide-react-native";
+import { Lock, Mail, ShieldUser, User, VenusAndMars } from "lucide-react-native";
 import {Picker} from '@react-native-picker/picker';
+import RegisterOrLogin from "../../components/registerOrLogin";
+import { useMutationRegister } from "../../tanStack/mutation/auth/register";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const FormRegister = z.object({
     name: z.string('Digite seu nome').min(2, 'Ao menos 2 letras'),
@@ -17,6 +20,8 @@ const FormRegister = z.object({
     sex: z.enum(['MASCULINE', 'FEMININE'], 'MASCULINE OU FEMININE')
 })
 
+type FormTypeRegister = z.infer<typeof FormRegister>
+
 export default function Screen(){
 
     const pickerRef = useRef(null)
@@ -24,9 +29,22 @@ export default function Screen(){
     const { control, register, handleSubmit, formState: {errors} } = useForm({
         resolver: zodResolver(FormRegister)
     })
+    const mutationRegister = useMutationRegister()
 
-    const onSubmit = (data: z.infer<typeof FormRegister>) => {
-        console.log(data)
+    const onSubmit = (data: FormTypeRegister) => {
+
+        mutationRegister.mutate(data, {
+            onSuccess: (result) => {
+                if(result.token){
+                    AsyncStorage.setItem('token', result.token)
+                    router.replace('/home')
+                }
+            },
+            onError: () => {
+                console.log('Ocorreu um error')
+            }
+        })
+
     }
 
     return (
@@ -38,7 +56,7 @@ export default function Screen(){
                     render={({field: { onChange, onBlur, value }}) => (
                         <View style={styles.areaInput}>
                             <View style={styles.iconInput}>
-                                <Mail color="#fff" size={18}/>
+                                <User color="#fff" size={18}/>
                             </View>
                             <TextInput
                                 style={styles.input}
@@ -82,7 +100,7 @@ export default function Screen(){
                     render={({field: { onChange, onBlur, value }}) => (
                         <View style={styles.areaInput}>
                             <View style={styles.iconInput}>
-                                <Mail color="#fff" size={18}/>
+                                <Lock color="#fff" size={18}/>
                             </View>
                             <TextInput
                                 style={styles.input}
@@ -104,7 +122,7 @@ export default function Screen(){
                     render={({field: { onChange, onBlur, value }}) => (
                         <View style={styles.areaInput}>
                             <View style={styles.iconInput}>
-                                <Mail color="#fff" size={18}/>
+                                <ShieldUser color="#fff" size={18}/>
                             </View>
                             <TextInput
                                 style={styles.input}
@@ -126,8 +144,17 @@ export default function Screen(){
                     control={control}
                     render={({field: { onChange, onBlur, value }}) => (
                         <View style={styles.areaInput}>
-                           
-                            <Picker ref={pickerRef}>
+                           <View style={styles.iconInput}>
+                                <VenusAndMars color="#fff" size={18}/>
+                            </View>
+                            <Picker ref={pickerRef}
+                                style={styles.picker}
+                                selectedValue={value}
+                                onValueChange={(itemValue) =>
+                                    onChange(itemValue)
+                                }
+                            >
+                            
                                 
                                 <Picker.Item label="Masculino" value="MASCULINE"/>
                                 <Picker.Item label="Feminino" value="FEMININE"/>
@@ -147,15 +174,11 @@ export default function Screen(){
                 onPress={handleSubmit(onSubmit)}
             >
                 <Text style={styles.textBtn}>
-                    Entrar
+                    Registrar
                 </Text>
             </Pressable>
 
-            <View>
-                <Text>
-                    Ainda não possui uma conta? <Link href="">Criar conta</Link>
-                </Text>
-            </View>
+            <RegisterOrLogin title="Ainda não possui conta?" router="/register"/>
         </SafeAreaView>
     )
 }
@@ -198,5 +221,11 @@ const styles = StyleSheet.create({
     },
     areaInput: {
         flexDirection: 'row'
+    },
+    picker:{
+        width: 260,
+        height: 60,
+        borderRadius: 40,
+        backgroundColor: '#dedede'
     }
 })
