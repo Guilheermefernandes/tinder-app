@@ -1,16 +1,15 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Pressable, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useQueryProfile } from "../../tanStack/query/profile";
 import { router } from "expo-router";
+import { LogOut } from "lucide-react-native";
+import Profile from "../../components/profile";
 
 export default function Screen(){
 
-    const [token, setToken] = useState<string>('')
-    const queryProfile = useQueryProfile(token)
-
-    const user = queryProfile.data
+    const [token, setToken] = useState<string | null>(null)
 
     useEffect(() => {
         const auth = async () => {
@@ -24,19 +23,38 @@ export default function Screen(){
         auth()
     }, [])
 
+    const queryProfile = useQueryProfile(token as string)
+
+    if(!token || queryProfile.isLoading){
+        return (
+            <View style={{ flex: 1, justifyContent: "center", alignItems: 'center'}}>
+                <ActivityIndicator size="small"/> 
+            </View>
+        )
+    }
+
+    const user = queryProfile.data
+
+    const logout = async () => {
+        await AsyncStorage.removeItem('token')
+        router.replace('index')
+    }
+
     return(
         <SafeAreaView style={styles.container}>
-            <View>
+            <View style={styles.header}>
                 <Text style={styles.title}>
                     Perfil
                 </Text>
-                <View>
-                    
-                </View>
+                <Pressable 
+                    onPress={logout}
+                    style={styles.exit}>
+                    <LogOut />
+                </Pressable>
             </View>
-            <View>
-                <Text>Nome: {user}</Text>
-            </View>
+            {user &&
+                <Profile user={user}/>
+            }
         </SafeAreaView>
     )
 }
@@ -51,4 +69,17 @@ const styles = StyleSheet.create({
         fontSize: 32,
         height: 80,
     },
+    header: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center'
+    },
+    exit: {
+        width: 60,
+        height: 60,
+        borderRadius: 99,
+        backgroundColor: '#dedede',
+        justifyContent: 'center',
+        alignItems: 'center'
+    }
 })
