@@ -37,7 +37,7 @@ export default function Screen(){
 
     const logout = async () => {
         await AsyncStorage.removeItem('token')
-        router.replace('index')
+        router.replace('login')
     }
 
     return(

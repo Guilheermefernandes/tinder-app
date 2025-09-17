@@ -178,7 +178,7 @@ export default function Screen(){
                 </Text>
             </Pressable>
 
-            <RegisterOrLogin title="Ainda não possui conta?" router="/register"/>
+            <RegisterOrLogin title="Já possui uma conta?" link="Fazer login" router="/login"/>
         </SafeAreaView>
     )
 }
