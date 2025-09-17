@@ -44,7 +44,7 @@ export default function Screen(){
         <SafeAreaView style={styles.container}>
             <View style={styles.header}>
                 <Text style={styles.title}>
-                    Perfil
+                    {user?.slug}
                 </Text>
                 <Pressable 
                     onPress={logout}
@@ -66,13 +66,14 @@ const styles = StyleSheet.create({
     },
     title: {
         fontWeight: 'bold',
-        fontSize: 32,
-        height: 80,
+        fontSize: 20,
+        color: '#666'
     },
     header: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        alignItems: 'center'
+        alignItems: 'center',
+        marginBottom: 20
     },
     exit: {
         width: 60,
