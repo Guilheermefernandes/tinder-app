@@ -1,20 +1,27 @@
-import { Text, View } from "react-native";
+import { ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Header from "../../components/header";
 import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { AuthContext } from "../../context/authContext";
+import { useQueryHome } from "../../tanStack/query/home";
+import { Post } from "../../types/posts";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Screen(){
 
     const auth = useContext(AuthContext)
+    const [token, setToken] = useState<string>('')
 
-    const [res, setRes] = useState<string | null>(null)
+    const queryHome = useQueryHome()
+
+
+    const posts: Post[] = queryHome.data
 
     const test = async () => {
-        const request = await axios.get('https://de33ee63e798.ngrok-free.app/user')
-        if(request.data){
-            setRes(request.data)
+        const token = await AsyncStorage.getItem('token')
+        if(token != null){
+            setToken(token)
         }
     }
 
@@ -25,16 +32,23 @@ export default function Screen(){
     return (
         <SafeAreaView style={{padding: 10}}>
             <Header />
-            <View>
-                {res != null &&
-                    <Text>{res}</Text>
-                }
-            </View>
-            <View>
-                {auth?.user === null &&
-                    <Text>Não a nada aqui</Text>
-                }
-            </View>
+            <ScrollView>
+                <View>
+                    {posts &&
+                        posts.map(p => (
+                            <Text key={p.id}>{p.title}</Text>
+                        ))
+                    }
+                </View>
+                <View>
+                    {auth?.user === null &&
+                        <Text>Não a nada aqui</Text>
+                    }
+                    {token.length > 0 &&
+                        <Text>{token}</Text>
+                    }
+                </View>
+            </ScrollView>
         </SafeAreaView>
     )
 }
