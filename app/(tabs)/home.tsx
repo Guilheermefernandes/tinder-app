@@ -1,54 +1,58 @@
-import { ScrollView, Text, View } from "react-native";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Header from "../../components/header";
 import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { AuthContext } from "../../context/authContext";
 import { useQueryHome } from "../../tanStack/query/home";
-import { Post } from "../../types/posts";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import Card from "../../components/card";
+import Indicartors from "../../components/homeIndicators";
+import { useQueryFindManyNotInteractionAndNotMatched } from "../../tanStack/query/findManyNotInteractionAndNotMatched";
+import { router } from "expo-router";
 
 export default function Screen(){
 
-    const auth = useContext(AuthContext)
-    const [token, setToken] = useState<string>('')
+    const [token, setToken] = useState<string | null>(null)
 
     const queryHome = useQueryHome()
 
 
-    const posts: Post[] = queryHome.data
-
-    const test = async () => {
+    const auth = async () => {
         const token = await AsyncStorage.getItem('token')
         if(token != null){
             setToken(token)
+        }else{
+            router.replace('login')
         }
     }
 
     useEffect(() => {
-        test()
+        auth()
     }, [])
 
+    const queryInteraction = useQueryFindManyNotInteractionAndNotMatched(token as string)
+
+    const users = queryInteraction.data
+
     return (
-        <SafeAreaView style={{padding: 10}}>
+        <SafeAreaView style={{padding: 10, flex: 1}}>
             <Header />
-            <ScrollView>
-                <View>
-                    {posts &&
-                        posts.map(p => (
-                            <Text key={p.id}>{p.title}</Text>
-                        ))
-                    }
-                </View>
-                <View>
-                    {auth?.user === null &&
-                        <Text>Não a nada aqui</Text>
-                    }
-                    {token.length > 0 &&
-                        <Text>{token}</Text>
-                    }
-                </View>
+            <Indicartors />
+            <ScrollView style={styles.scroll} horizontal showsHorizontalScrollIndicator={false}>
+                {users &&
+                    users.map(u => (
+                        <Card key={u.id} user={u}/>
+                    ))
+                }
             </ScrollView>
         </SafeAreaView>
     )
 }
+
+const styles = StyleSheet.create({
+    scroll: { 
+        flex: 1,
+        marginTop: 30,
+    }
+})

@@ -12,4 +12,5 @@ export interface User {
   interactions: number
   matched: number
   photos : number
+  avatar?: string
 }

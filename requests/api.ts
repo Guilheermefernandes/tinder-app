@@ -1,5 +1,6 @@
 import axios from "axios";
+import { urlServeBase } from "../app/utils/urlBaseBackend";
 
 export const api = axios.create({
-    baseURL: ' https://a9dece6ac609.ngrok-free.app'
+    baseURL: urlServeBase
 })

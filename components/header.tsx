@@ -5,7 +5,7 @@ import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 export default function Header(){
     return(
         <View style={styles.container}>
-            <Pressable style={styles.profile} onPress={() => router.push('/profile/usuario')}>
+            <Pressable style={styles.profile} onPress={() => router.push('(tabs)/(telas)/profile/usuario')}>
                 <UserRound />  
             </Pressable>
             <TextInput 
@@ -23,7 +23,8 @@ const styles = StyleSheet.create({
     container: {
         flexDirection: 'row',
         alignItems: 'center',
-        gap: 8
+        gap: 8,
+        marginBottom: 50
     },
     profile: {
         height: 60,

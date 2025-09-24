@@ -1,4 +1,5 @@
 import { CameraView } from "expo-camera";
+import { router } from "expo-router";
 import { CameraIcon, SunMoon, SwitchCamera, Zap, ZapOff, ZapOffIcon } from "lucide-react-native";
 import { useEffect, useRef, useState } from "react";
 import { Image, Pressable, StyleSheet, View } from "react-native";
@@ -11,6 +12,7 @@ export default function Camera(){
     const [face, setFace] = useState<FaceCamera>('back')
     const [flash, setFlash] = useState<FlashCamera>("off")
     const [onCamera, setCameraOn] = useState<boolean>(false)
+    const [mirrorCamera, setMirrorCamera] = useState<boolean>(true)
     const [photo, setPhoto] = useState<string | null>(null)
     const refCamera = useRef<CameraView>(null)
 
@@ -50,6 +52,10 @@ export default function Camera(){
 
             if(photo){
                 setPhoto(photo.uri)
+                router.push({
+                    pathname: '(tabs)/(telas)/photo/[tag]',
+                    params: { tag: encodeURIComponent(photo.uri) }
+                })
             }
 
         }
@@ -61,13 +67,8 @@ export default function Camera(){
             facing={face}
             flash={flash}
             onCameraReady={() => setCameraReady()}
+            mirror={mirrorCamera}
             style={styles.container}>
-
-            <View>
-                {photo != null &&
-                    <Image source={{uri: photo}} style={{ width: 150, height: 150 }}/>
-                }
-            </View>
 
             <View style={styles.content}>
                 <Pressable 

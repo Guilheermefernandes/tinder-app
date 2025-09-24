@@ -1,4 +1,4 @@
-import { Button, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { Button, Image, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Input from "../../ui/input";
 import { useState } from "react";
@@ -41,6 +41,11 @@ export default function Screen(){
 
     return (
         <SafeAreaView style={styles.container}>
+
+            <View>
+                <Image source={require('../../assets/match-logo.o.png')}/>
+            </View>
+
             <View style={{ gap: 10 }}>
                 <Controller 
                     control={control}

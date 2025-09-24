@@ -1,20 +1,86 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Button, Image, Platform, Pressable, StyleSheet, Text, View } from "react-native";
 import { User } from "../types/user";
-import { UserRound } from "lucide-react-native";
+import { Camera, CameraIcon, UserRound } from "lucide-react-native";
 import WorkProfile from "./workProfile";
+import * as ImagePicker from 'expo-image-picker';
+import { useState } from "react";
+import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useQueryGetPostUserById } from "../tanStack/query/post/findManyUserPostsById";
+import { urlServeBase } from "../app/utils/urlBaseBackend";
 
 type Props = {
     user: User
 }
 
+const url = `${urlServeBase}/public/uploads`
+
 export default function Profile({user}: Props){
+
+    const [status, requestPermission] = ImagePicker.useMediaLibraryPermissions()
+    const [avatar, setAvatar] = useState<string>('')
+
+    if(status?.status !== 'granted'){
+        <View>
+            <Button title="Permitir acesso" onPress={requestPermission}/>
+        </View>
+    }
+
+    const pickerImage = async () => {
+        const result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ['images'],
+            allowsEditing: true,
+            aspect: [1,1],
+            quality: 1,
+            exif: true
+        })
+
+        if(result.assets){
+            uploadImage(result.assets[0])
+        }
+        
+    }
+
+    const uploadImage = async (assets: ImagePicker.ImagePickerAsset) => {
+
+        const data = new FormData()
+
+        data.append('file', {
+            name: assets.fileName,
+            type: assets.mimeType,
+            uri: Platform.OS === 'ios' ? assets.uri.replace('file://', '') : assets.uri
+        } as any)
+
+        const token = await AsyncStorage.getItem('token')
+
+        
+        const request = await axios.post(`${urlServeBase}/user/avatar`, data, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                'Authorization': `Bearer ${token}`
+            }
+        })
+
+        if(request.data){
+            setAvatar(assets.uri)
+        }
+        
+    }
 
     return(
         <View style={styles.container}>
             <View style={styles.header}>
-                <View style={styles.avatar}>
-                    <UserRound />
-                </View>
+                <Pressable style={styles.avatar} onPress={pickerImage}>
+                    {user.avatar != undefined &&
+                        <Image source={{ uri: `${url}/${user.avatar}` }} style={{ width: 80, height: 80 }}/>
+                    }
+                    {user.avatar == undefined &&
+                        <Camera />
+                    }
+                    {avatar.length > 0 && 
+                        <Image source={{ uri: avatar }} style={{ width: 80, height: 80 }} />
+                    }
+                </Pressable>
                 <View style={styles.headerData}>
                     <Text style={styles.title}>{user.name}</Text>
                     <Text style={styles.email}>{user.email}</Text>
@@ -42,8 +108,6 @@ const styles = StyleSheet.create({
         height: 80,
         backgroundColor: '#dedede',
         borderRadius: 99,
-        justifyContent: 'center',
-        alignItems: 'center',
         overflow: 'hidden'
     },
     header: {

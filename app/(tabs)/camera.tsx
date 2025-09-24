@@ -4,7 +4,7 @@ import Camera from "../../components/camera";
 
 export default function Screen(){
     return(
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView style={styles.container} edges={[]}>
             <Camera />
         </SafeAreaView>
     )

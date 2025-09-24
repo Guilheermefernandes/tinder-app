@@ -1,0 +1,1 @@
+export const urlImage = 'https://f3f1112c5025.ngrok-free.app/public/uploads'

@@ -2,10 +2,10 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useQueryProfile } from "../../tanStack/query/profile";
 import { router } from "expo-router";
 import { LogOut } from "lucide-react-native";
-import Profile from "../../components/profile";
+import Profile from "../../../../components/profile";
+import { useQueryProfile } from "../../../../tanStack/query/profile";
 
 export default function Screen(){
 
