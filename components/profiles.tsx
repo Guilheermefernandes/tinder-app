@@ -1,6 +1,6 @@
-import { Dimensions, FlatList, Image, Pressable, StyleSheet, Text, View } from "react-native";
+import { Dimensions, FlatList, Image, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { User } from "../types/user";
-import { Camera, Heart, Info, X } from "lucide-react-native";
+import { Camera, Heart, Info, Scroll, X } from "lucide-react-native";
 import WorkProfile from "./workProfile";
 import { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -71,50 +71,52 @@ export default function Profiles({ user }: Props){
 
     return(
         <View>
-            <View style={styles.header}>
-                <View>
-                    <Image source={{ uri: `${urlImage}/${user.avatar}` }} style={styles.avatar} resizeMode="cover"/>
-                    <LinearGradient 
-                        colors={['transparent', '#000']}
-                        locations={[0.5, 1]}
-                        style={styles.gradient}
-                    />
-                </View>
-                <View style={styles.info}>
-                    <Text style={styles.name}>{user.name}</Text>
-                    <Text numberOfLines={2} style={styles.description}>{user.description}</Text>
-                    <View style={styles.work}>
-                        <WorkProfile color="#fff" label="Posts" data={user.photos}/>
-                        <WorkProfile color="#fff" label="Matchs" data={user.matched}/>
-                        <WorkProfile color="#fff" label="Interações" data={user.interactions}/>
-                    </View>
-                    <View style={styles.areaBtn}>
-                        <Pressable style={styles.btn}>
-                            <X color="#fff" size={15}/>
-                            <Text style={styles.textBtn}>Cancelar</Text>
-                        </Pressable>
-                        <Pressable style={[styles.btn, styles.btnApprove]}>
-                            <Heart color="#000" size={15}/>
-                            <Text style={[styles.textBtn, styles.textBtnApprove]}>Gostei</Text>
-                        </Pressable>
-                    </View>
-                </View>
-            </View>
             {posts &&
-                <FlatList
-                    data={posts}
-                    keyExtractor={item => item.id}
-                    numColumns={3}
-                    renderItem={({ item }) => (
-                        <Pressable onPress={() => modal(item.path)}>
-                            <Image
-                                source={{ uri: `${urlImage}/${item.path}` }}
-                                style={styles.image}
+            <FlatList
+                data={posts}
+                keyExtractor={item => item.id}
+                numColumns={3}
+                renderItem={({ item }) => (
+                    <Pressable>
+                        <Image
+                            source={{ uri: `${urlImage}/${item.path}` }}
+                            style={styles.image}
+                        />
+                    </Pressable>
+                )}
+                showsVerticalScrollIndicator={false}
+                ListHeaderComponent={
+                    <View style={styles.header}>
+                        <View>
+                            <Image source={{ uri: `${urlImage}/${user.avatar}` }} style={styles.avatar} resizeMode="cover"/>
+                            <LinearGradient 
+                                colors={['transparent', '#000']}
+                                locations={[0.5, 1]}
+                                style={styles.gradient}
                             />
-                        </Pressable>
-                    )}
-                    showsVerticalScrollIndicator={false}
-                />
+                        </View>
+                        <View style={styles.info}>
+                            <Text style={styles.name}>{user.name}</Text>
+                            <Text numberOfLines={2} style={styles.description}>{user.description}</Text>
+                            <View style={styles.work}>
+                                <WorkProfile color="#fff" label="Posts" data={user.photos}/>
+                                <WorkProfile color="#fff" label="Matchs" data={user.matched}/>
+                                <WorkProfile color="#fff" label="Interações" data={user.interactions}/>
+                            </View>
+                            <View style={styles.areaBtn}>
+                                <Pressable style={styles.btn}>
+                                    <X color="#fff" size={15}/>
+                                    <Text style={styles.textBtn}>Cancelar</Text>
+                                </Pressable>
+                                <Pressable style={[styles.btn, styles.btnApprove]}>
+                                    <Heart color="#000" size={15}/>
+                                    <Text style={[styles.textBtn, styles.textBtnApprove]}>Gostei</Text>
+                                </Pressable>
+                            </View>
+                        </View>
+                    </View>
+                }
+            />
             }
             {modalImage &&
                 <ModalImageProfile photo={photo} showModal={modalImage} closeModal={closeModal}/>
