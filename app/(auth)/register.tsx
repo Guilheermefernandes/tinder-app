@@ -143,22 +143,24 @@ export default function Screen(){
                 <Controller 
                     control={control}
                     render={({field: { onChange, onBlur, value }}) => (
-                        <View style={styles.areaInput}>
-                           <View style={styles.iconInput}>
-                                <VenusAndMars color="#fff" size={18}/>
+                        <View style={{ marginTop: 10 }}>
+                            <Text style={{ marginBottom: 5, color: '#666' }}>Sexo</Text>
+                            <View style={{
+                                backgroundColor: '#dedede',
+                                borderRadius: 15,
+                                overflow: 'hidden',
+                                width: 320
+                            }}>
+                                <Picker
+                                    selectedValue={value}
+                                    onValueChange={onChange}
+                                    style={{ width: '100%' }}
+                                    itemStyle={{ height: 60 }}
+                                >
+                                    <Picker.Item label="Masculino" value="MASCULINE"/>
+                                    <Picker.Item label="Feminino" value="FEMININE"/>
+                                </Picker>
                             </View>
-                            <Picker ref={pickerRef}
-                                style={styles.picker}
-                                selectedValue={value}
-                                onValueChange={(itemValue) =>
-                                    onChange(itemValue)
-                                }
-                            >
-                            
-                                
-                                <Picker.Item label="Masculino" value="MASCULINE"/>
-                                <Picker.Item label="Feminino" value="FEMININE"/>
-                            </Picker>
                         </View>
 
                     )}
