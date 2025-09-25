@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useMutationCreatePost } from "../../tanStack/mutation/post/create";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
+import { Camera } from "lucide-react-native";
 
 export default function Screen(){
 
@@ -74,7 +75,12 @@ export default function Screen(){
 
     return(
         <SafeAreaView style={styles.container}>
-            <Text style={styles.title}>Criar postagem</Text>
+            <View style={styles.header}>
+                <Text style={styles.title}>Criar postagem</Text>
+                <View style={styles.camera}>
+                    <Camera />
+                </View>
+            </View>
             <Pressable style={styles.btn} onPress={pickerImage}>
                 <Text>Selecionar imagem</Text>
             </Pressable>
@@ -97,6 +103,19 @@ const styles = StyleSheet.create({
         flex: 1,
         padding: 10,
     },
+    header: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+    },
+    camera: {
+        width: 60,
+        height: 60,
+        borderRadius: 99,
+        backgroundColor: '#ccc',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
     title: {
         fontSize: 24,
         fontWeight: 'bold'
@@ -112,7 +131,7 @@ const styles = StyleSheet.create({
     },
     imageArea: {
         width: 'auto',
-        height: '70%',
+        height: '60%',
         borderRadius: 20,
         backgroundColor: '#ccc',
         overflow: 'hidden'

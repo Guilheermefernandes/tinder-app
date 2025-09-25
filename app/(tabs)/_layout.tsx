@@ -1,5 +1,5 @@
 import { Tabs } from "expo-router";
-import { Camera, CircleFadingPlus, House, MessageCircle } from "lucide-react-native";
+import { Camera, CircleFadingPlus, Heart, House, MessageCircle, ThumbsUp } from "lucide-react-native";
 import { AuthProvider } from "../../context/authContext";
 
 export default function TabsLayout(){
@@ -13,13 +13,17 @@ export default function TabsLayout(){
                     title: 'Home',
                     tabBarIcon: ({color, focused}) => <House color={focused ? color : '#777'}/>
                 }}/>
+                <Tabs.Screen name="like" options={{
+                    title: 'Curtidas',
+                    tabBarIcon: ({color, focused}) => <ThumbsUp color={focused ? color : "#777"} />
+                }}/>
+                <Tabs.Screen name="matched" options={{
+                    title: 'Matches',
+                    tabBarIcon: ({color, focused}) => <Heart color={focused ? color : "#777"}/>
+                }}/>
                 <Tabs.Screen name="message" options={{
                     title: 'Menssagens',
                     tabBarIcon: ({ color, focused }) => <MessageCircle color={focused ? color : "#777" }/>
-                }}/>
-                <Tabs.Screen name="camera" options={{
-                    title: 'Câmera',
-                    tabBarIcon: ({ color, focused }) => <Camera color={focused ? color : "#777" }/>
                 }}/>
                 <Tabs.Screen name="post" options={{
                     title: "Post",

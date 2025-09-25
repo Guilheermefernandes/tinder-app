@@ -1,6 +1,6 @@
 import { Dimensions, FlatList, Image, Pressable, StyleSheet, Text, View } from "react-native";
 import { User } from "../types/user";
-import { Camera, Heart, X } from "lucide-react-native";
+import { Camera, Heart, Info, X } from "lucide-react-native";
 import WorkProfile from "./workProfile";
 import { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -12,6 +12,7 @@ import { urlImage } from "../app/utils/image";
 import axios from "axios";
 import { urlServeBase } from "../app/utils/urlBaseBackend";
 import ModalImageProfile from "./modalImageProfile";
+import { LinearGradient } from "expo-linear-gradient";
 
 type Props = {
     user: User
@@ -69,49 +70,9 @@ export default function Profiles({ user }: Props){
     }, [token])
 
     return(
-        <View>
-            <View style={styles.header}>
-                <Text style={styles.slug}>{user.slug}</Text>
-            </View>
-            <View style={styles.info}>
-                <View style={styles.avatar}>
-                    {user.avatar != undefined &&
-                        <Image source={{ uri: `${urlImage}/${user.avatar}` }} style={styles.avatar}/>
-                    }
-                    {user.avatar == undefined &&
-                        <View style={{ height: 80, width: 80, justifyContent: 'center', alignItems: 'center' }}>
-                            <Camera />
-                        </View>
-                    }
-                </View>
-                <View>
-                    <Text style={styles.name}>{user.name}</Text>
-                    <Text style={styles.email}>{user.email}</Text>
-                </View>
-            </View>
-            <View>
-                <Text style={styles.description}>
-                    {user.description}
-                </Text>
-            </View>
-            <View style={styles.areaBtn}>
-                <Pressable style={styles.btn}>
-                    <X color="#fff" size={15}/>
-                    <Text style={styles.textBtn}>Cancelar</Text>
-                </Pressable>
-                <Pressable style={[styles.btn, styles.btnApprove]}>
-                    <Heart color="#000" size={15}/>
-                    <Text style={[styles.textBtn, styles.textBtnApprove]}>Gostei</Text>
-                </Pressable>
-            </View>
-            <View style={styles.work}>
-                <WorkProfile label="Posts" data={user.photos}/>
-                <WorkProfile label="Matchs" data={user.matched}/>
-                <WorkProfile label="Interações" data={user.interactions}/>
-            </View>
-            <View>
-                {posts &&
-                    <FlatList
+        <View style={{ flex: 1 }}>
+            {posts &&
+                <FlatList
                     data={posts}
                     keyExtractor={item => item.id}
                     numColumns={3}
@@ -124,9 +85,40 @@ export default function Profiles({ user }: Props){
                         </Pressable>
                     )}
                     showsVerticalScrollIndicator={false}
-                  />
-                }
-            </View>
+                    ListHeaderComponent={
+                        <View style={styles.header}>
+                            <View>
+                                <Image source={{ uri: `${urlImage}/${user.avatar}` }} style={styles.avatar} resizeMode="cover"/>
+                                <LinearGradient 
+                                    colors={['transparent', '#000']}
+                                    locations={[0.5, 1]}
+                                    style={styles.gradient}
+                                />
+                            </View>
+                            <View style={styles.info}>
+                                <Text style={styles.name}>{user.name}</Text>
+                                <Text numberOfLines={2} style={styles.description}>{user.description}</Text>
+                                <View style={styles.work}>
+                                    <WorkProfile color="#fff" label="Posts" data={user.photos}/>
+                                    <WorkProfile color="#fff" label="Matchs" data={user.matched}/>
+                                    <WorkProfile color="#fff" label="Interações" data={user.interactions}/>
+                                </View>
+                                <View style={styles.areaBtn}>
+                                    <Pressable style={styles.btn}>
+                                        <X color="#fff" size={15}/>
+                                        <Text style={styles.textBtn}>Cancelar</Text>
+                                    </Pressable>
+                                    <Pressable style={[styles.btn, styles.btnApprove]}>
+                                        <Heart color="#000" size={15}/>
+                                        <Text style={[styles.textBtn, styles.textBtnApprove]}>Gostei</Text>
+                                    </Pressable>
+                                </View>
+                            </View>
+                        </View>
+                    }
+                    stickyHeaderIndices={[0]}
+                />
+            }
             {modalImage &&
                 <ModalImageProfile photo={photo} showModal={modalImage} closeModal={closeModal}/>
             }
@@ -136,34 +128,42 @@ export default function Profiles({ user }: Props){
 
 const styles = StyleSheet.create({
     header: {
-        marginBottom: 30
+        
     },
     slug: {
         fontSize: 24,
         fontWeight: 'bold',
         color: '#666'
     },
+    gradient: {
+        position: 'absolute',
+        bottom: 0,
+        top: 0,
+        left: 0,
+        right: 0,
+    },
     info: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: 10
+        flexDirection: 'column',
+        gap: 10,
+        backgroundColor: '#000',
+        paddingHorizontal: 10
     },
     name: {
-        fontSize: 20,
-        fontWeight: 'bold'
+        fontSize: 24,
+        fontWeight: 'bold',
+        color: '#fff'
     },
     email: {
         color: '#666'
     },
     description: {
         fontSize: 14,
-        marginTop: 20,
+        marginTop: 10,
         color: '#666'
     },
     avatar: {
-        width: 80,
-        height: 80,
-        borderRadius: 99,
+        width: 'auto',
+        height: 400,
         backgroundColor: '#ccc'
     },
     work: {
@@ -180,7 +180,7 @@ const styles = StyleSheet.create({
     areaBtn: {
         flexDirection: 'row',
         gap: 10,
-        marginTop: 30
+        marginVertical: 10
     },
     btn: {
         flexDirection: 'row',
@@ -188,7 +188,8 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         paddingVertical: 8,
         borderRadius: 10,
-        backgroundColor: '#000',
+        backgroundColor: '#FF3636',
+        opacity: 0.5,
         alignItems: 'center',
         gap: 10
     },
@@ -197,7 +198,7 @@ const styles = StyleSheet.create({
     },
     btnApprove: {
         backgroundColor: '#27F57D',
-        opacity: 0.9
+        opacity: 0.5
     },
     textBtnApprove: {
         color: '#000'

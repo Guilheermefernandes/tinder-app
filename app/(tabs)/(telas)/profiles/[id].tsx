@@ -51,6 +51,5 @@ export default function Screen(){
 
 const styles = StyleSheet.create({
     container: {
-        padding: 10
     }
 })
