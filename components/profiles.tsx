@@ -70,7 +70,36 @@ export default function Profiles({ user }: Props){
     }, [token])
 
     return(
-        <View style={{ flex: 1 }}>
+        <View>
+            <View style={styles.header}>
+                <View>
+                    <Image source={{ uri: `${urlImage}/${user.avatar}` }} style={styles.avatar} resizeMode="cover"/>
+                    <LinearGradient 
+                        colors={['transparent', '#000']}
+                        locations={[0.5, 1]}
+                        style={styles.gradient}
+                    />
+                </View>
+                <View style={styles.info}>
+                    <Text style={styles.name}>{user.name}</Text>
+                    <Text numberOfLines={2} style={styles.description}>{user.description}</Text>
+                    <View style={styles.work}>
+                        <WorkProfile color="#fff" label="Posts" data={user.photos}/>
+                        <WorkProfile color="#fff" label="Matchs" data={user.matched}/>
+                        <WorkProfile color="#fff" label="Interações" data={user.interactions}/>
+                    </View>
+                    <View style={styles.areaBtn}>
+                        <Pressable style={styles.btn}>
+                            <X color="#fff" size={15}/>
+                            <Text style={styles.textBtn}>Cancelar</Text>
+                        </Pressable>
+                        <Pressable style={[styles.btn, styles.btnApprove]}>
+                            <Heart color="#000" size={15}/>
+                            <Text style={[styles.textBtn, styles.textBtnApprove]}>Gostei</Text>
+                        </Pressable>
+                    </View>
+                </View>
+            </View>
             {posts &&
                 <FlatList
                     data={posts}
@@ -85,38 +114,6 @@ export default function Profiles({ user }: Props){
                         </Pressable>
                     )}
                     showsVerticalScrollIndicator={false}
-                    ListHeaderComponent={
-                        <View style={styles.header}>
-                            <View>
-                                <Image source={{ uri: `${urlImage}/${user.avatar}` }} style={styles.avatar} resizeMode="cover"/>
-                                <LinearGradient 
-                                    colors={['transparent', '#000']}
-                                    locations={[0.5, 1]}
-                                    style={styles.gradient}
-                                />
-                            </View>
-                            <View style={styles.info}>
-                                <Text style={styles.name}>{user.name}</Text>
-                                <Text numberOfLines={2} style={styles.description}>{user.description}</Text>
-                                <View style={styles.work}>
-                                    <WorkProfile color="#fff" label="Posts" data={user.photos}/>
-                                    <WorkProfile color="#fff" label="Matchs" data={user.matched}/>
-                                    <WorkProfile color="#fff" label="Interações" data={user.interactions}/>
-                                </View>
-                                <View style={styles.areaBtn}>
-                                    <Pressable style={styles.btn}>
-                                        <X color="#fff" size={15}/>
-                                        <Text style={styles.textBtn}>Cancelar</Text>
-                                    </Pressable>
-                                    <Pressable style={[styles.btn, styles.btnApprove]}>
-                                        <Heart color="#000" size={15}/>
-                                        <Text style={[styles.textBtn, styles.textBtnApprove]}>Gostei</Text>
-                                    </Pressable>
-                                </View>
-                            </View>
-                        </View>
-                    }
-                    stickyHeaderIndices={[0]}
                 />
             }
             {modalImage &&
