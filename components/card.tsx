@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
     },
     image: {
         width: 'auto',
-        height: 400,
+        height: '60%',
         backgroundColor: "#ccc"
     },
     imageContent: {
