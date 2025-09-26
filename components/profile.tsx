@@ -1,4 +1,4 @@
-import { Button, Image, Platform, Pressable, StyleSheet, Text, View } from "react-native";
+import { Button, Image, Platform, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { User } from "../types/user";
 import { Camera, CameraIcon, UserRound } from "lucide-react-native";
 import WorkProfile from "./workProfile";
@@ -8,6 +8,7 @@ import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useQueryGetPostUserById } from "../tanStack/query/post/findManyUserPostsById";
 import { urlServeBase } from "../app/utils/urlBaseBackend";
+import Posts from "./posts";
 
 type Props = {
     user: User
@@ -94,6 +95,10 @@ export default function Profile({user}: Props){
             <Pressable style={styles.btnEdit}>
                 <Text style={styles.textBtn}>Editar dados</Text>
             </Pressable>
+            <View style={styles.postsArea}>
+                <Posts user={user}/>
+                
+            </View>
         </View>
     )
 }
@@ -143,5 +148,8 @@ const styles = StyleSheet.create({
     },
     textBtn: {
         textAlign: 'center'
+    },
+    postsArea: {
+        marginTop: 30
     }
 })
