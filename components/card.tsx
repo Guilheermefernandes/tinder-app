@@ -2,7 +2,7 @@ import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import { User } from "../types/user";
 import { CircleX, ThumbsUp } from "lucide-react-native";
 import { router } from "expo-router";
-import { urlImage } from "../app/utils/image";
+import { urlImage } from "../utils/image";
 import { LinearGradient } from 'expo-linear-gradient';
 
 type Props = {

@@ -1,1 +1,0 @@
-export const urlServeBase = 'https://cdd00f6392af.ngrok-free.app'

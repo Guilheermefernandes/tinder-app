@@ -1,6 +1,6 @@
 import { Image, StyleSheet, Text, View } from "react-native";
 import { User } from "../types/user";
-import { urlImage } from "../app/utils/image";
+import { urlImage } from "../utils/image";
 
 type Props = {
     user: User

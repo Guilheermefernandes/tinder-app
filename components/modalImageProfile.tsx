@@ -1,5 +1,5 @@
 import { Animated, Image, Pressable, StyleSheet, Text, View } from "react-native";
-import { urlServeBase } from "../app/utils/urlBaseBackend";
+import { urlServeBase } from "../utils/urlBaseBackend";
 
 type Props = {
     photo: string

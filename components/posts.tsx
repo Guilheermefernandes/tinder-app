@@ -4,9 +4,10 @@ import { Post } from "../types/post";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import axios from "axios";
-import { urlServeBase } from "../app/utils/urlBaseBackend";
+import { urlServeBase } from "../utils/urlBaseBackend";
 import { User } from "../types/user";
-import { urlImage } from "../app/utils/image";
+import { urlImage } from "../utils/image";
+import { useQueryGetPostUserById } from "../tanStack/query/post/findManyUserPostsById";
 
 type Props = {
     user: User
@@ -18,7 +19,6 @@ const imageSize = screenWidth / 3;
 export default function Posts({user}: Props){
 
     const [token, setToken] = useState('')
-    const [posts, setPosts] = useState<Post[] | null>(null)
 
     const auth = async () => {
         const tokenAsync = await AsyncStorage.getItem('token')
@@ -29,37 +29,26 @@ export default function Posts({user}: Props){
         }
     }
 
-    const getPosts = async () => {
-        if(token.length > 0){
-            const request = await axios.get(`${urlServeBase}/post/${user.id}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            })
-    
-            if(request.data){
-                setPosts(request.data)
-            }
-        }
-    }
-
     useEffect(() => {
         auth()
     }, [])
     
-    useEffect(() => {
-        getPosts()
-    }, [token])
+    const queryUserGetPosts = useQueryGetPostUserById(token, user.id)
+
+    const posts = queryUserGetPosts.data
 
     return(
         <View>
-            {posts &&
+            {posts != undefined &&
                 <FlatList
                     data={posts}
                     keyExtractor={item => item.id}
                     numColumns={3}
                     renderItem={({ item }) => (
-                        <Pressable>
+                        <Pressable onPress={() => router.push({
+                            pathname: '/(tabs)/(telas)/profile/[postId]',
+                            params: { postId: item.id }
+                        })}>
                             <Image
                                 source={{ uri: `${urlImage}/${item.path}` }}
                                 style={styles.image}

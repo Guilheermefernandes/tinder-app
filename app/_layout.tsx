@@ -2,10 +2,11 @@ import { Redirect, router, Stack } from "expo-router";
 import { AuthContext, AuthProvider, useAuth } from "../context/authContext";
 import { useContext } from "react";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { query } from "../utils/query";
 
 export default function RootLayout(){
 
-    const queryClient = new QueryClient()
+    const queryClient = query
 
     return(
         <QueryClientProvider client={queryClient}>

@@ -1,4 +1,4 @@
-import { Button, Image, Platform, Pressable, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Button, Image, Platform, Pressable, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as ImagePicker from 'expo-image-picker';
 import { useEffect, useState } from "react";
@@ -6,6 +6,7 @@ import { useMutationCreatePost } from "../../tanStack/mutation/post/create";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import { Camera } from "lucide-react-native";
+import { query } from "../../utils/query";
 
 export default function Screen(){
 
@@ -64,7 +65,12 @@ export default function Screen(){
 
             mutationPost.mutate({auth: token, file: data}, {
                 onSuccess: (result) => {
-                    setPhoto('')
+                    query.invalidateQueries({
+                        queryKey: ['posts']
+                    })
+                    router.push({
+                        pathname: `(tabs)/(telas)/profile/usuario`
+                    })
                 }
             })
 
@@ -72,6 +78,13 @@ export default function Screen(){
 
     }
 
+    if(mutationPost.isPending){
+        return(
+            <View style={{ flex: 1, justifyContent: "center", alignItems: 'center'}}>
+                <ActivityIndicator />
+            </View>
+        )
+    }
 
     return(
         <SafeAreaView style={styles.container}>

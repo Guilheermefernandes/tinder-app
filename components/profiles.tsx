@@ -8,9 +8,9 @@ import { router } from "expo-router";
 import { useQueryFindUserById } from "../tanStack/query/findUserByIdQuery";
 import { Post } from "../types/post";
 import { useQueryGetPostUserById } from "../tanStack/query/post/findManyUserPostsById";
-import { urlImage } from "../app/utils/image";
+import { urlImage } from "../utils/image";
 import axios from "axios";
-import { urlServeBase } from "../app/utils/urlBaseBackend";
+import { urlServeBase } from "../utils/urlBaseBackend";
 import ModalImageProfile from "./modalImageProfile";
 import { LinearGradient } from "expo-linear-gradient";
 
