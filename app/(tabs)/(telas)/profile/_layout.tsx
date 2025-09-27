@@ -6,6 +6,8 @@ export default function ProfileLayout(){
             headerShown: false
         }}>
             <Stack.Screen name="usuario" />
+            <Stack.Screen name="update/[userId]"/>
+            <Stack.Screen name="hobies/[userId]"/>
             <Stack.Screen name="[postId]" />
         </Stack>
     )

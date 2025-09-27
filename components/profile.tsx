@@ -9,6 +9,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useQueryGetPostUserById } from "../tanStack/query/post/findManyUserPostsById";
 import { urlServeBase } from "../utils/urlBaseBackend";
 import Posts from "./posts";
+import { router } from "expo-router";
 
 type Props = {
     user: User
@@ -92,7 +93,10 @@ export default function Profile({user}: Props){
                 <WorkProfile label="matchs" data={user.matched}/>    
                 <WorkProfile label="Interações" data={user.interactions}/>    
             </View>
-            <Pressable style={styles.btnEdit}>
+            <Pressable style={styles.btnEdit} onPress={() => router.push({
+                pathname: '/(tabs)/(telas)/profile/update/[userId]',
+                params: {userId: user.id}
+            })}>
                 <Text style={styles.textBtn}>Editar dados</Text>
             </Pressable>
             <View style={styles.postsArea}>
