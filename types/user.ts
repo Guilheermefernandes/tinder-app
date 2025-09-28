@@ -11,6 +11,11 @@ export interface User {
   description?: string
   interactions: number
   matched: number
-  photos : number
+  photos: number
   avatar?: string
+}
+
+export interface UpdateUser {
+  name?: string;
+  description?: string;
 }

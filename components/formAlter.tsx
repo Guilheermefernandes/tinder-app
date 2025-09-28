@@ -2,17 +2,39 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import z, { minLength } from "zod";
+import { useMutationUpdateUser } from "../tanStack/mutation/user/updateUser";
+import { QueryClient } from "@tanstack/react-query";
+import { query } from "../utils/query";
+import { router } from "expo-router";
+
+type Props = {
+    auth: string
+}
 
 const Form = z.object({
-    name: z.string('Escreva seu nome'),
-    description: z.string('Escreva sua descrição')
+    name: z.string().optional(),
+    description: z.string().optional()
 })
 
-export default function FormAlter(){
+export default function FormAlter({auth}: Props){
 
     const { control, handleSubmit, formState: { errors } } = useForm({
         resolver: zodResolver(Form)
     })
+    const mutationUpdateUser = useMutationUpdateUser()
+
+    const onSubmit = (data: z.infer<typeof Form>) => {
+        mutationUpdateUser.mutate({auth, data}, {
+            onSuccess: (result) => {
+                if(result.ok){
+                    query.invalidateQueries({
+                        queryKey: ['profile']
+                    })
+                    router.back()
+                }
+            }
+        })
+    }
 
     return(
         <View style={styles.container}>
@@ -45,7 +67,7 @@ export default function FormAlter(){
                 />
             </View>
             <View style={styles.areaBtn}>
-                <Pressable style={styles.btn}>
+                <Pressable style={styles.btn} onPress={handleSubmit(onSubmit)}>
                     <Text>Editar dados</Text>
                 </Pressable>
             </View>

@@ -4,10 +4,26 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import UpdateComponent from "../../../../../components/updateComponent";
 import FormAlter from "../../../../../components/formAlter";
+import { useEffect, useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Screen(){
 
     const { userId } = useLocalSearchParams()
+    const [token, setToken] = useState('')
+
+    const auth = async () => {
+        const tokenAsync = await AsyncStorage.getItem('token')
+        if(tokenAsync != null){
+            setToken(tokenAsync)
+        }else{
+            router.replace('/login')
+        }
+    }
+
+    useEffect(() => {
+        auth()
+    }, [])
 
     return(
         <SafeAreaView style={styles.container}>
@@ -26,7 +42,7 @@ export default function Screen(){
                     />
                 </View>
                 <View style={{marginTop: 20, flex: 1}}>
-                    <FormAlter/>
+                    <FormAlter auth={token}/>
                 </View>
             </View>
         </SafeAreaView>
