@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
-import { StyleSheet, TextInput, View } from "react-native";
+import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import z, { minLength } from "zod";
 
 const Form = z.object({
@@ -16,38 +16,49 @@ export default function FormAlter(){
 
     return(
         <View style={styles.container}>
-            <Controller
-                control={control}
-                render={({field: {onChange, onBlur, value}}) => (
-                    <TextInput
-                        style={styles.input}
-                        onChangeText={onChange}
-                        onBlur={onBlur}
-                        value={value}
-                        placeholder="Novo nome"
-                    />
-                )}
-                name="name"
-            />
-            <Controller
-                control={control}
-                render={({field: {onChange, onBlur, value}}) => (
-                    <TextInput
-                        style={styles.input}
-                        onChangeText={onChange}
-                        onBlur={onBlur}
-                        value={value}
-                        placeholder="Nova descrição"
-                    />
-                )}
-                name="description"
-            />
+            <View style={styles.areaInputs}>
+                <Controller
+                    control={control}
+                    render={({field: {onChange, onBlur, value}}) => (
+                        <TextInput
+                            style={styles.input}
+                            onChangeText={onChange}
+                            onBlur={onBlur}
+                            value={value}
+                            placeholder="Novo nome"
+                        />
+                    )}
+                    name="name"
+                />
+                <Controller
+                    control={control}
+                    render={({field: {onChange, onBlur, value}}) => (
+                        <TextInput
+                            style={styles.input}
+                            onChangeText={onChange}
+                            onBlur={onBlur}
+                            value={value}
+                            placeholder="Nova descrição"
+                        />
+                    )}
+                    name="description"
+                />
+            </View>
+            <View style={styles.areaBtn}>
+                <Pressable style={styles.btn}>
+                    <Text>Editar dados</Text>
+                </Pressable>
+            </View>
         </View>
     )
 }
 
 const styles = StyleSheet.create({
     container: {
+        flex: 1,
+        justifyContent: 'space-between'
+    },
+    areaInputs: {
         gap: 10
     },
     input: {
@@ -55,5 +66,16 @@ const styles = StyleSheet.create({
         backgroundColor: '#dedede',
         paddingHorizontal: 15,
         borderRadius: 10,
+    },
+    areaBtn: {
+        height: 60,
+    },
+    btn: {
+        width: '100%',
+        height: '100%',
+        backgroundColor: '#dedede',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 10
     },
 })

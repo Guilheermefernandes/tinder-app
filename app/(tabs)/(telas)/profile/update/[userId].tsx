@@ -25,14 +25,9 @@ export default function Screen(){
                         userId={userId as string}
                     />
                 </View>
-                <View style={{marginTop: 20}}>
+                <View style={{marginTop: 20, flex: 1}}>
                     <FormAlter/>
                 </View>
-            </View>
-            <View style={styles.areaBtn}>
-                <Pressable style={styles.btn}>
-                    <Text>Editar dados</Text>
-                </Pressable>
             </View>
         </SafeAreaView>
     )
