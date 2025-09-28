@@ -2,6 +2,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import z from "zod";
+import { useMutationAlterPassword } from "../tanStack/mutation/profile/alterPassword";
+import { useEffect, useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { router } from "expo-router";
 
 type Props = {
     userId: string
@@ -19,6 +23,23 @@ export default function PasswordForm({userId}: Props){
         resolver: zodResolver(FormAlterPassword)
     })
 
+    const [token, setToken] = useState('')
+
+     const auth = async () => {
+        const tokenAsync = await AsyncStorage.getItem('token')
+        if(tokenAsync != null){
+            setToken(tokenAsync)
+        }else{
+            router.replace('/login')
+        }
+    }
+
+    useEffect(() => {
+        auth()
+    }, [])
+
+    const mutationPassword = useMutationAlterPassword()
+
     const onSubmit = (data: z.infer<typeof FormAlterPassword>) => {
         if(data.newPassword != data.confirmNewPassword){
             alert('Senhas deiferentes')
@@ -27,7 +48,13 @@ export default function PasswordForm({userId}: Props){
             alert('Senha nova igual a senha antiga. Faça outra!')
         }
         
-        
+        mutationPassword.mutate({auth: token, data: data}, {
+            onSuccess: (result) => {
+                if(result.ok == true){
+                    alert('Senhas alterada!')
+                }
+            }
+        })
         
     }
 

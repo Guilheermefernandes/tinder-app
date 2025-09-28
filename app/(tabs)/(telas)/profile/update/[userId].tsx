@@ -3,6 +3,7 @@ import { CornerDownRight } from "lucide-react-native";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import UpdateComponent from "../../../../../components/updateComponent";
+import FormAlter from "../../../../../components/formAlter";
 
 export default function Screen(){
 
@@ -23,6 +24,9 @@ export default function Screen(){
                         path="password"
                         userId={userId as string}
                     />
+                </View>
+                <View style={{marginTop: 20}}>
+                    <FormAlter/>
                 </View>
             </View>
             <View style={styles.areaBtn}>
