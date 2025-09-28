@@ -6,6 +6,7 @@ import { router } from "expo-router";
 import { LogOut } from "lucide-react-native";
 import Profile from "../../../../components/profile";
 import { useQueryProfile } from "../../../../tanStack/query/profile";
+import { useQueryGetHobbiesUser } from "../../../../tanStack/query/hobbies/getHobbiesUserQuery";
 
 export default function Screen(){
 
@@ -24,8 +25,9 @@ export default function Screen(){
     }, [])
 
     const queryProfile = useQueryProfile(token as string)
+    const queryHobbies = useQueryGetHobbiesUser(token as string)
 
-    if(!token || queryProfile.isLoading){
+    if(!token || queryProfile.isLoading || queryHobbies.isLoading){
         return (
             <View style={{ flex: 1, justifyContent: "center", alignItems: 'center'}}>
                 <ActivityIndicator size="small"/> 
@@ -34,6 +36,7 @@ export default function Screen(){
     }
 
     const user = queryProfile.data
+    const hobbies = queryHobbies.data
 
     const logout = async () => {
         await AsyncStorage.removeItem('token')
@@ -53,7 +56,7 @@ export default function Screen(){
                 </Pressable>
             </View>
             {user &&
-                <Profile user={user}/>
+                <Profile hobbies={hobbies} user={user}/>
             }
         </SafeAreaView>
     )

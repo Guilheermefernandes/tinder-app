@@ -29,7 +29,7 @@ export default function Screen(){
     if(token.length === 0 || queryHobbies.isLoading){
         return (
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                <ActivityIndicator/>
+                <ActivityIndicator size='small'/>
             </View>
         )
     }

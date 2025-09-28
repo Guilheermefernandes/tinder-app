@@ -10,14 +10,17 @@ import { useQueryGetPostUserById } from "../tanStack/query/post/findManyUserPost
 import { urlServeBase } from "../utils/urlBaseBackend";
 import Posts from "./posts";
 import { router } from "expo-router";
+import { Hobbies } from "../types/hobies";
+import Hobbie from "./hobbie";
 
 type Props = {
+    hobbies: Hobbies[] | undefined
     user: User
 }
 
 const url = `${urlServeBase}/public/uploads`
 
-export default function Profile({user}: Props){
+export default function Profile({hobbies, user}: Props){
 
     const [status, requestPermission] = ImagePicker.useMediaLibraryPermissions()
     const [avatar, setAvatar] = useState<string>('')
@@ -85,7 +88,13 @@ export default function Profile({user}: Props){
                 </Pressable>
                 <View style={styles.headerData}>
                     <Text style={styles.title}>{user.name}</Text>
-                    <Text style={styles.email}>{user.email}</Text>
+                    <View style={{ flexDirection: 'row', gap: 4 }}>
+                        {hobbies != undefined &&
+                            hobbies.map(h => (
+                                <Hobbie key={h.id} hobbie={h}/>
+                            ))
+                        }
+                    </View>
                 </View>
             </View>
             <View style={styles.profileWork}>

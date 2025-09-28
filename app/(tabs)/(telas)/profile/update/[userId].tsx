@@ -31,6 +31,11 @@ export default function Screen(){
             <View style={styles.form}>
                 <View style={{gap: 10}}>
                     <UpdateComponent 
+                        label="Remover Hobbies" 
+                        path="hobies"
+                        userId={userId as string}
+                    />
+                    <UpdateComponent 
                         label="Adicionar Hobbies" 
                         path="hobies"
                         userId={userId as string}
