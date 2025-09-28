@@ -68,7 +68,7 @@ export default function FormAlter({auth}: Props){
             </View>
             <View style={styles.areaBtn}>
                 <Pressable style={styles.btn} onPress={handleSubmit(onSubmit)}>
-                    <Text>Editar dados</Text>
+                    <Text style={styles.textBtn}>Editar dados</Text>
                 </Pressable>
             </View>
         </View>
@@ -95,9 +95,13 @@ const styles = StyleSheet.create({
     btn: {
         width: '100%',
         height: '100%',
-        backgroundColor: '#dedede',
+        backgroundColor: '#000',
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 10
     },
+    textBtn: {
+        color: '#fff',
+        fontWeight: 500
+    }
 })
