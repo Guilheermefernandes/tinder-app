@@ -42,7 +42,7 @@ export default function Screen(){
             <ScrollView style={styles.scroll} horizontal showsHorizontalScrollIndicator={false}>
                 {users &&
                     users.map(u => (
-                        <Card key={u.id} user={u}/>
+                        <Card key={u.id} auth={token as string} user={u}/>
                     ))
                 }
             </ScrollView>

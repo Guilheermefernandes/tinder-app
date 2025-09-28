@@ -7,6 +7,7 @@ import { LogOut } from "lucide-react-native";
 import Profile from "../../../../components/profile";
 import { useQueryProfile } from "../../../../tanStack/query/profile";
 import { useQueryGetHobbiesUser } from "../../../../tanStack/query/hobbies/getHobbiesUserQuery";
+import { query } from "../../../../utils/query";
 
 export default function Screen(){
 
@@ -40,6 +41,9 @@ export default function Screen(){
 
     const logout = async () => {
         await AsyncStorage.removeItem('token')
+        query.removeQueries({
+            queryKey: ['profile']
+        })
         router.replace('login')
     }
 

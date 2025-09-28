@@ -4,12 +4,38 @@ import { CircleX, ThumbsUp } from "lucide-react-native";
 import { router } from "expo-router";
 import { urlImage } from "../utils/image";
 import { LinearGradient } from 'expo-linear-gradient';
+import { useMutationCreateInteraction } from "../tanStack/mutation/interaction/createInteractionMutation";
+import { query } from "../utils/query";
 
 type Props = {
     user: User
+    auth: string
 }
 
-export default function Card({ user }: Props){
+export default function Card({ auth, user }: Props){
+
+    const mutationCreateInteraction = useMutationCreateInteraction()
+
+    const reject = () => {
+
+    }
+
+    const approve = () => {
+
+        mutationCreateInteraction.mutate({auth: auth, param: user.id, query: 'LIKE'}, {
+            onSuccess: (result) => {
+                if(result.ok == true){
+                    query.invalidateQueries({
+                        queryKey: ['interaction']
+                    })
+                    query.invalidateQueries({
+                        queryKey: ['like']
+                    })
+                }
+            }
+        })
+    }
+
     return(
         <Pressable style={styles.container} onPress={() => router.push({
             pathname: '(tabs)/(telas)/profiles/[id]',
@@ -32,7 +58,7 @@ export default function Card({ user }: Props){
                     <Pressable style={[styles.btn, styles.reject]}>
                         <CircleX />
                     </Pressable>
-                    <Pressable style={[styles.btn, styles.approve]}>
+                    <Pressable style={[styles.btn, styles.approve]} onPress={approve}>
                         <ThumbsUp />
                     </Pressable>
                 </View>
