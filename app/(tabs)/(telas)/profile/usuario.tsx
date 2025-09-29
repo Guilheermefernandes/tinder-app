@@ -4,10 +4,10 @@ import { ActivityIndicator, Pressable, StyleSheet, Text, View } from "react-nati
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
 import { LogOut } from "lucide-react-native";
-import Profile from "../../../../components/profile";
 import { useQueryProfile } from "../../../../tanStack/query/profile";
 import { useQueryGetHobbiesUser } from "../../../../tanStack/query/hobbies/getHobbiesUserQuery";
 import { query } from "../../../../utils/query";
+import Profile from "../../../../components/profile";
 
 export default function Screen(){
 
@@ -60,7 +60,7 @@ export default function Screen(){
                 </Pressable>
             </View>
             {user &&
-                <Profile hobbies={hobbies} user={user}/>
+                <Profile hobbies={hobbies} user={user} token={token}/>
             }
         </SafeAreaView>
     )
@@ -69,7 +69,7 @@ export default function Screen(){
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 10
+        padding: 0
     },
     title: {
         fontWeight: 'bold',
@@ -80,7 +80,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginBottom: 20
+        marginBottom: 20,
+        paddingHorizontal: 15
     },
     exit: {
         width: 60,

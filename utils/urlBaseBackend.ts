@@ -1,1 +1,1 @@
-export const urlServeBase = 'https://3e4e4d2837e1.ngrok-free.app'
+export const urlServeBase = 'https://75e75edd8a27.ngrok-free.app'

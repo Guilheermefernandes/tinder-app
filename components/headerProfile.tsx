@@ -1,9 +1,9 @@
-import { Button, FlatList, Image, Platform, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Button, Image, Platform, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { User } from "../types/user";
 import { Camera, CameraIcon, GalleryVertical, Grid3x3, UserRound } from "lucide-react-native";
 import WorkProfile from "./workProfile";
 import * as ImagePicker from 'expo-image-picker';
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode, useState } from "react";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useQueryGetPostUserById } from "../tanStack/query/post/findManyUserPostsById";
@@ -14,27 +14,21 @@ import { Hobbies } from "../types/hobies";
 import Hobbie from "./hobbie";
 import FeedProfile from "./feedProfile";
 import PostsFeed from "./postsFeed";
-import HeaderProfile from "./headerProfile";
-import IntemPost from "./itemPost";
-
-export enum Layout {
-    GRID = 'GRID',
-    QUEUE = 'QUEUE'
-}
+import { Layout } from "./profile";
 
 type Props = {
     hobbies: Hobbies[] | undefined
-    user: User,
-    token: string
+    user: User
+    onChange: (t: Layout) => void
 }
 
-export default function Profile({hobbies, user, token}: Props){
+const url = `${urlServeBase}/public/uploads`
+
+export default function HeaderProfile({hobbies, user, onChange}: Props){
 
     const [status, requestPermission] = ImagePicker.useMediaLibraryPermissions()
     const [avatar, setAvatar] = useState<string>('')
     const [content, setContent] = useState<ReactNode>(<Posts user={user}/>)
-    const [layoutPost, setLayoutPost] = useState<Layout>(Layout.GRID)
-    const [colums, setColums] = useState(3)
 
     if(status?.status !== 'granted'){
         <View>
@@ -83,31 +77,54 @@ export default function Profile({hobbies, user, token}: Props){
         
     }
 
-    useEffect(() => {
-        if(layoutPost === Layout.QUEUE){
-            setColums(1)
-        }else{
-            setColums(3)
-        }
-    }, [layoutPost])
-
-    const queryUserGetPosts = useQueryGetPostUserById(token, user.id)
-
-    const posts = queryUserGetPosts.data
-
     return(
         <View style={styles.container}>
-            <FlatList
-                key={colums}
-                ListHeaderComponent={
-                    <HeaderProfile hobbies={hobbies} user={user} onChange={t => setLayoutPost(t)}/>
-                }
-                data={posts}
-                numColumns={colums}
-                renderItem={({item}) => (
-                    <IntemPost post={item} layoutPost={layoutPost}/>
-                )}
-            />
+            <View style={styles.header}>
+                <Pressable style={styles.avatar} onPress={pickerImage}>
+                    {user.avatar != undefined &&
+                        <Image source={{ uri: `${url}/${user.avatar}` }} style={{ width: 80, height: 80 }}/>
+                    }
+                    {user.avatar == undefined &&
+                        <Camera />
+                    }
+                    {avatar.length > 0 && 
+                        <Image source={{ uri: avatar }} style={{ width: 80, height: 80 }} />
+                    }
+                </Pressable>
+                <View style={styles.headerData}>
+                    <Text style={styles.title}>{user.name}</Text>
+                    <View style={{ flexDirection: 'row', gap: 4 }}>
+                        {hobbies != undefined &&
+                            hobbies.map(h => (
+                                <Hobbie key={h.id} hobbie={h}/>
+                            ))
+                        }
+                    </View>
+                </View>
+            </View>
+            <View style={styles.profileWork}>
+                <WorkProfile label="Photos" data={user.photos}/>            
+                <WorkProfile label="matchs" data={user.matched}/>    
+                <WorkProfile label="Interações" data={user.interactions}/>    
+            </View>
+            <Pressable style={styles.btnEdit} onPress={() => router.push({
+                pathname: '/(tabs)/(telas)/profile/update/[userId]',
+                params: {userId: user.id}
+            })}>
+                <Text style={styles.textBtn}>Editar dados</Text>
+            </Pressable>
+            <View style={styles.areaNavigate}>
+                <Pressable style={{flex: 1, alignItems: 'center'}} 
+                    onPress={() => onChange(Layout.GRID)}
+                >
+                    <Grid3x3 />
+                </Pressable>
+                <Pressable style={{flex: 1, alignItems: 'center'}}
+                    onPress={() =>onChange(Layout.QUEUE) }    
+                >
+                    <GalleryVertical />
+                </Pressable>
+            </View>
         </View>
     )
 }
@@ -116,6 +133,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         marginTop: 10,
+        paddingHorizontal: 15
     },
     avatar: {
         width: 80,
