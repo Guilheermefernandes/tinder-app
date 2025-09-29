@@ -1,9 +1,9 @@
 import { Button, Image, Platform, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { User } from "../types/user";
-import { Camera, CameraIcon, UserRound } from "lucide-react-native";
+import { Camera, CameraIcon, GalleryVertical, Grid3x3, UserRound } from "lucide-react-native";
 import WorkProfile from "./workProfile";
 import * as ImagePicker from 'expo-image-picker';
-import { useState } from "react";
+import { ReactNode, useState } from "react";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useQueryGetPostUserById } from "../tanStack/query/post/findManyUserPostsById";
@@ -12,6 +12,8 @@ import Posts from "./posts";
 import { router } from "expo-router";
 import { Hobbies } from "../types/hobies";
 import Hobbie from "./hobbie";
+import FeedProfile from "./feedProfile";
+import PostsFeed from "./postsFeed";
 
 type Props = {
     hobbies: Hobbies[] | undefined
@@ -24,6 +26,7 @@ export default function Profile({hobbies, user}: Props){
 
     const [status, requestPermission] = ImagePicker.useMediaLibraryPermissions()
     const [avatar, setAvatar] = useState<string>('')
+    const [content, setContent] = useState<ReactNode>(<Posts user={user}/>)
 
     if(status?.status !== 'granted'){
         <View>
@@ -108,9 +111,22 @@ export default function Profile({hobbies, user}: Props){
             })}>
                 <Text style={styles.textBtn}>Editar dados</Text>
             </Pressable>
+            <View style={styles.areaNavigate}>
+                <Pressable style={{flex: 1, alignItems: 'center'}} 
+                    onPress={() => setContent(<Posts user={user}/>)}
+                >
+                    <Grid3x3 />
+                </Pressable>
+                <Pressable style={{flex: 1, alignItems: 'center'}}
+                    onPress={() => setContent(<PostsFeed user={user}/>)}    
+                >
+                    <GalleryVertical />
+                </Pressable>
+            </View>
             <View style={styles.postsArea}>
-                <Posts user={user}/>
-                
+                <FeedProfile >
+                    {content}
+                </FeedProfile>
             </View>
         </View>
     )
@@ -163,6 +179,10 @@ const styles = StyleSheet.create({
         textAlign: 'center'
     },
     postsArea: {
-        marginTop: 30
+        marginTop: 0
+    },
+    areaNavigate: {
+        flexDirection: 'row',
+        paddingVertical: 15
     }
 })

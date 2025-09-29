@@ -4,12 +4,11 @@ import { useQueryFindQueue } from "../../tanStack/query/interactions/findQueue";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
+import Like from "../../components/likeComponent";
 
 export default function Screen(){
 
     const [token, setToken] = useState<string | null>(null)
-
-
 
     const auth = async () => {
         const tokenAsync = await AsyncStorage.getItem('token')
@@ -35,7 +34,7 @@ export default function Screen(){
             <Text style={styles.title}>Curtidas recebidas</Text>
             {data != undefined && 
                 data.map(i => (
-                    <Text key={i.id}>{i.from_user_id}</Text>
+                    <Like key={i.id} auth={token as string} interaction={i}/>
                 ))
             }
         </SafeAreaView>
@@ -50,6 +49,6 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 24,
         fontWeight: 'bold',
-        marginBottom: 20
+        marginBottom: 50
     }
 })
