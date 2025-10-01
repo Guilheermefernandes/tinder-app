@@ -4,6 +4,6 @@ export type Post = {
     path: string,
     title: string,
     description: string,
-    createdA: Date
+    createdAt: Date
     delete: boolean
 }
