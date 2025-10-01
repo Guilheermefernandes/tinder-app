@@ -7,6 +7,9 @@ import { MessageCircle, ThumbsUp, Underline } from "lucide-react-native";
 import { useMutationCreateLike } from "../tanStack/mutation/like/createLike.mutation";
 import { query } from "../utils/query";
 import { useQueryFindManyLike } from "../tanStack/query/like/findManyLike.query";
+import { useMutationDeslike } from "../tanStack/mutation/like/deslike.mutation";
+import { useState } from "react";
+import { Like } from "../types/like";
 
 type Props = {
     post: Post;
@@ -26,12 +29,15 @@ export default function IntemPost({
     const createdAt = date.toLocaleString('pt-BR', {   timeZone: 'America/Sao_Paulo'})
     const mutationLike = useMutationCreateLike()
     const queryLikes = useQueryFindManyLike(post.id)
+    const mutationDeslike = useMutationDeslike()
+    const [meLike, setMeLike] = useState<Like | null>(null)
 
     // implement
     const like = () => {
         mutationLike.mutate({postId: post.id, auth: token}, {
             onSuccess: (result) => {
                 if(result.status === 200){
+                    setMeLike(result.like)
                     query.invalidateQueries({
                         queryKey: ['likes', post.id]
                     })
@@ -39,6 +45,23 @@ export default function IntemPost({
             }
         })
     }
+
+    const deslike = () => {
+        if(meLike){
+            mutationDeslike.mutate({likeId: meLike.id, auth: token}, {
+                onSuccess: (result) => {
+                    if(result.status === 200){
+                        setMeLike(result.like)
+                        query.invalidateQueries({
+                            queryKey: ['likes', post.id]
+                        })
+                    }
+                }
+            })
+        }
+    }
+
+    //implement query me like
 
     const likes = queryLikes.data
 
@@ -81,7 +104,7 @@ export default function IntemPost({
             <Image source={{ uri: `${urlImage}/${post.path}` }} style={layoutPost === Layout.GRID ? styles.image : styles.imageQueue} resizeMode="cover"/>
             {layoutPost === Layout.QUEUE && 
                 <View style={styles.interactions}>
-                    <Pressable style={[styles.btn]} onPress={like}>
+                    <Pressable style={[styles.btn]} onPress={meLike?.deleted == true || meLike == null ? like : deslike}>
                         <ThumbsUp color={likes?.like != undefined && likes.like > 0 ? '#2795F5' : '#000'}/>
                         <Text>
                             {likes != undefined &&

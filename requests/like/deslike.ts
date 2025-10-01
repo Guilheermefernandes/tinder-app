@@ -10,13 +10,11 @@ type Response = {
     like: Like
 }
 
-export const createLike = async (postId: string, auth: string): Promise<Response> => {
+export const deslike = async (likeId: string, auth: string): Promise<Response> => {
 
     try{
 
-        console.log(auth)
-
-        const request = await api.post(`/like/${postId}`, {},{
+        const request = await api.delete(`/like/${likeId}`,{
             headers: {
                 Authorization: `Bearer ${auth}`
             }
