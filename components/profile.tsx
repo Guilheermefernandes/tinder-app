@@ -105,7 +105,7 @@ export default function Profile({hobbies, user, token}: Props){
                 data={posts}
                 numColumns={colums}
                 renderItem={({item}) => (
-                    <IntemPost post={item} layoutPost={layoutPost} user={user}/>
+                    <IntemPost post={item} layoutPost={layoutPost} user={user} token={token}/>
                 )}
             />
         </View>

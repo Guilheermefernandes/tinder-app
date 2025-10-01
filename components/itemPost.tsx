@@ -3,23 +3,44 @@ import { Post } from "../types/post";
 import { Layout } from "./profile";
 import { urlImage } from "../utils/image";
 import { User } from "../types/user";
-import { MessageCircle, ThumbsUp } from "lucide-react-native";
+import { MessageCircle, ThumbsUp, Underline } from "lucide-react-native";
+import { useMutationCreateLike } from "../tanStack/mutation/like/createLike.mutation";
+import { query } from "../utils/query";
+import { useQueryFindManyLike } from "../tanStack/query/like/findManyLike.query";
 
 type Props = {
     post: Post;
     layoutPost: Layout;
     user: User;
+    token: string
 }
 
 const content = Dimensions.get('window').width
 const square = content / 3
 
 export default function IntemPost({
-    post, layoutPost, user
+    post, layoutPost, user, token
 }: Props){
 
     const date = new Date(post.createdAt)
     const createdAt = date.toLocaleString('pt-BR', {   timeZone: 'America/Sao_Paulo'})
+    const mutationLike = useMutationCreateLike()
+    const queryLikes = useQueryFindManyLike(post.id)
+
+    // implement
+    const like = () => {
+        mutationLike.mutate({postId: post.id, auth: token}, {
+            onSuccess: (result) => {
+                if(result.status === 200){
+                    query.invalidateQueries({
+                        queryKey: ['likes', post.id]
+                    })
+                }
+            }
+        })
+    }
+
+    const likes = queryLikes.data
 
     return(
         <View style={[layoutPost === Layout.GRID ? styles.grid : styles.queue, layoutPost === Layout.QUEUE ? styles.margin : styles.none]}>
@@ -60,9 +81,16 @@ export default function IntemPost({
             <Image source={{ uri: `${urlImage}/${post.path}` }} style={layoutPost === Layout.GRID ? styles.image : styles.imageQueue} resizeMode="cover"/>
             {layoutPost === Layout.QUEUE && 
                 <View style={styles.interactions}>
-                    <Pressable style={[styles.btn]}>
-                        <ThumbsUp />
-                        <Text>670</Text>
+                    <Pressable style={[styles.btn]} onPress={like}>
+                        <ThumbsUp color={likes?.like != undefined && likes.like > 0 ? '#2795F5' : '#000'}/>
+                        <Text>
+                            {likes != undefined &&
+                                likes.like
+                            }
+                            {likes == undefined &&
+                                0
+                            }
+                        </Text>
                     </Pressable>
                     <Pressable style={[styles.btn]}>
                         <MessageCircle />
